@@ -10,24 +10,24 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const (
-	dbDriver      = "postgres"
-	dbSource      = "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable"
-	serverAddress = "127.0.0.1:8080"
-)
-
 func main() {
+	println("Starting main")
+
 	config, err := util.LoadConfig(".") //config file is in current directory
 	if err != nil {
 		log.Fatal("cannot load config:", err)
 	}
+	println("Config loaded")
+
 	conn, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
+	println("DB connected")
 
 	store := db.NewStore(conn)
 	server, err := api.NewServer(config, store)
+	println("Server created")
 
 	if err != nil {
 		log.Fatal("cannot create server:", err)
@@ -36,4 +36,5 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot start server:", err)
 	}
+	println("Server started")
 }

@@ -21,6 +21,7 @@ type Server struct {
 
 // NewServer creates a new HTTP server and set up routing
 func NewServer(config util.Config, store db.Store) (*Server, error) {
+	println("Creating new server")
 	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetrickey)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create token maker: %w", err)
@@ -41,6 +42,8 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 }
 
 func (server *Server) setupRouter() {
+	println("Setting up router")
+
 	router := gin.Default()
 
 	router.POST("/users", server.createUser)

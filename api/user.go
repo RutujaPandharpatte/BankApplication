@@ -86,8 +86,11 @@ type loginUserResponse struct {
 }
 
 func (server *Server) loginUser(ctx *gin.Context) {
+	println("received login request")
+
 	var req loginUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
+		println("error in binding")
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -95,15 +98,18 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	user, err := server.store.GetUser(ctx, req.Username)
 	if err != nil {
 		if err == sql.ErrNoRows {
+			println("user not found")
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
 			return
 		}
+		println("error in getting user")
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
 	err = util.CheckPassword(req.Password, user.HashedPassword)
 	if err != nil {
+		println("password incorrect")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
@@ -113,6 +119,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 		server.config.AccessTokenDuration,
 	)
 	if err != nil {
+		println("error in creating token")
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -122,5 +129,6 @@ func (server *Server) loginUser(ctx *gin.Context) {
 		User:        newUserResponse(user),
 	}
 
+	println("login successful")
 	ctx.JSON(http.StatusOK, rsp)
 }
