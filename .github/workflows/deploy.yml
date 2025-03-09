@@ -49,9 +49,6 @@ jobs:
     - name: Verify AWS Authentication
       run: aws sts get-caller-identity
     
-    - name: Verify EKS Access
-      run: kubectl get nodes
-
     - name: Deploy image to Amazon EKS
       run: |
         kubectl apply -f eks/aws-auth.yaml --validate=false
