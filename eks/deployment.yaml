@@ -17,5 +17,6 @@ spec:
       containers:
       - name: bank-application
         image: 361769557367.dkr.ecr.eu-north-1.amazonaws.com/bank_application:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
